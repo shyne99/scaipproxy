@@ -13,6 +13,8 @@ const { RoutingType } = require('@routr/core/routing_type')
 const { RouteEntityType } = require('@routr/core/route_entity_type')
 const { Status } = require('@routr/core/status')
 const config = require('@routr/core/config_util')()
+const FromHeader = Java.type('javax.sip.header.FromHeader')
+const SynthRegistrar = require('@routr/registrar/synth_reg')
 
 const Request = Java.type('javax.sip.message.Request')
 const Response = Java.type('javax.sip.message.Response')
@@ -21,12 +23,16 @@ const LOG = LogManager.getLogger()
 
 const globalACL = config.spec.accessControlList
 
+// Experimental feature
+const isScaipMessage = r => r.getHeader(FromHeader.NAME).getTag() === '286524'
+
 class RequestProcessor {
   constructor (sipProvider, dataAPIs, contextStorage) {
     this.sipProvider = sipProvider
     this.contextStorage = contextStorage
     this.dataAPIs = dataAPIs
     this.domainsAPI = dataAPIs.DomainsAPI
+    this.synthRegistrar = new SynthRegistrar()
   }
 
   process (event) {
@@ -95,6 +101,12 @@ class RequestProcessor {
         new CancelHandler().doProcess(transaction)
         break
       default:
+        if (
+          request.getMethod() === Request.MESSAGE &&
+          isScaipMessage(request)
+        ) {
+          this.synthRegistrar.register(request)
+        }
         new RequestHandler(this.sipProvider, this.contextStorage).doProcess(
           transaction,
           request,

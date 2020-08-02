@@ -31,7 +31,6 @@ class Locator {
 
   addEndpoint (addressOfRecord, route) {
     // This must be done here before we convert contactURI into a string
-    const contactURI = LocatorUtils.aorAsString(route.contactURI)
     route.contactURI = route.contactURI.toString()
 
     LOG.debug(
@@ -146,7 +145,7 @@ class Locator {
     postal.subscribe({
       channel: 'locator',
       topic: 'endpoint.remove',
-      callback: (data, envelope) => {
+      callback: data => {
         const aor = aorAsString(data.addressOfRecord)
         this.removeEndpoint(aor, data.contactURI, data.isWildcard)
       }
@@ -155,7 +154,7 @@ class Locator {
     postal.subscribe({
       channel: 'locator',
       topic: 'endpoint.add',
-      callback: (data, envelope) => {
+      callback: data => {
         const aor = aorAsString(data.addressOfRecord)
         this.addEndpoint(aor, data.route)
       }
@@ -164,7 +163,7 @@ class Locator {
     postal.subscribe({
       channel: 'locator',
       topic: 'endpoint.find',
-      callback: (data, envelope) => {
+      callback: data => {
         const response = this.findEndpoint(aorAsString(data.addressOfRecord))
         postal.publish({
           channel: 'locator',
