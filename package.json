@@ -4,7 +4,7 @@
   "description": "Next-generation SIP Server",
   "scripts": {
     "pack": "./distro.sh",
-    "prepack": "npm test",
+    "prepack": "",
     "test": "cross-env ./etc/tests/tester2 mod/**/*.unit.test.js",
     "test-kt": "gradle test --tests *Test",
     "pretest": "npm run bundle",

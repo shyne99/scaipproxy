@@ -7,6 +7,7 @@ const RegistrarUtils = require('@routr/registrar/utils')
 const DSSelector = require('@routr/data_api/ds_selector')
 const AgentsAPI = require('@routr/data_api/agents_api')
 const FromHeader = Java.type('javax.sip.header.FromHeader')
+const ToHeader = Java.type('javax.sip.header.ToHeader')
 const LogManager = Java.type('org.apache.logging.log4j.LogManager')
 const ViaHeader = Java.type('javax.sip.header.ViaHeader')
 const SipFactory = Java.type('javax.sip.SipFactory')
@@ -24,11 +25,20 @@ class SynthRegistrar {
 
   register (r) {
     const request = r.clone()
-    const aor = request
+    const username = request
       .getHeader(FromHeader.NAME)
       .getAddress()
       .getURI()
-      .toString()
+      .getUser()
+    // We need the host from the To header
+    // because the From doesn't have a FQDN
+    const host = request
+      .getHeader(ToHeader.NAME)
+      .getAddress()
+      .getURI()
+      .getHost()
+    const aor = `sip:${username}@${host}`
+
     this.addEndpoint(aor, request)
     return true
   }
@@ -68,20 +78,9 @@ class SynthRegistrar {
       .getURI()
       .getUser()
     const viaHeader = request.getHeader(ViaHeader.NAME)
-    const host =
-      RegistrarUtils.useInternalInterface(request) && viaHeader.getReceived()
-        ? viaHeader.getReceived()
-        : viaHeader.getHost()
-    const port =
-      RegistrarUtils.useInternalInterface(request) &&
-      viaHeader.getRPort() !== -1
-        ? viaHeader.getRPort()
-        : viaHeader.getPort() === -1
-        ? 5060
-        : viaHeader.getPort()
 
     const contactAddress = this.addressFactory.createAddress(
-      `sip:${username}@${host}:${port}`
+      `sip:${username}@${viaHeader.getReceived()}:${viaHeader.getRPort()}`
     )
     const contactHeader = this.headerFactory.createContactHeader(contactAddress)
     return contactHeader.getAddress().getURI()
