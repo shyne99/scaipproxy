@@ -9,6 +9,9 @@ WORKDIR /opt/routr
 
 COPY routr-${ROUTR_VERSION}_linux-x64_bin.tar.gz .
 
+RUN curl -qL -o /usr/bin/netdiscover https://github.com/CyCoreSystems/netdiscover/releases/download/v1.2.5/netdiscover.linux.amd64
+RUN chmod +x /usr/bin/netdiscover
+
 RUN apt-get update \
     && tar xvf routr-${ROUTR_VERSION}_linux-x64_bin.tar.gz \
     && mv routr-${ROUTR_VERSION}_linux-x64_bin/* . \
