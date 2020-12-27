@@ -15,7 +15,6 @@ const {
   configureProxyAuthorization,
   configureRequestURI,
   configureMaxForwards,
-  configureContact,
   configurePrivacy,
   configureRecordRoute,
   configureIdentity,
@@ -27,7 +26,6 @@ const { RoutingType } = require('@routr/core/routing_type')
 const ObjectId = Java.type('org.bson.types.ObjectId')
 const Request = Java.type('javax.sip.message.Request')
 const Response = Java.type('javax.sip.message.Response')
-const RouteHeader = Java.type('javax.sip.header.RouteHeader')
 const ViaHeader = Java.type('javax.sip.header.ViaHeader')
 const ToHeader = Java.type('javax.sip.header.ToHeader')
 const LogManager = Java.type('org.apache.logging.log4j.LogManager')
@@ -69,12 +67,21 @@ class RequestHandler {
   }
 
   doProcess (transaction, request, routeInfo) {
-    const aor = config.spec.useToAsAOR
-      ? request
-          .getHeader(ToHeader.NAME)
-          .getAddress()
-          .getURI()
-      : request.getRequestURI()
+    let requestURI = request.getRequestURI()
+    const toURI = request
+      .getHeader(ToHeader.NAME)
+      .getAddress()
+      .getURI()
+
+    // If the requestURI has the form sip:host it and this flag is activated
+    // the server will add the user part of the toHeader as the user fo the
+    // requestURI
+    if (config.spec.patchRequestURI && !requestURI.getUser()) {
+      requestURI.setUser(toURI.getUser())
+      request.setRequestURI(requestURI)
+    }
+
+    const aor = config.spec.useToAsAOR ? toURI : requestURI
 
     if (isInDialog(request)) {
       this.processRoute(transaction, request, null, routeInfo)
@@ -101,6 +108,7 @@ class RequestHandler {
       .getHeader(ViaHeader.NAME)
       .getTransport()
       .toLowerCase()
+
     const lp = this.sipProvider.getListeningPoint(transport)
     const localAddr = { host: lp.getIPAddress().toString(), port: lp.getPort() }
 

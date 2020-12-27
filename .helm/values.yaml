@@ -46,6 +46,7 @@ routr:
   localnets: []
   recordRoute: false
   useToAsAOR: false
+  patchRequestURI: false
   registrarIntf: External
   accessControlList:
     deny: []
