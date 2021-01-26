@@ -114,12 +114,12 @@ class RequestProcessor {
             `core.processor.RequestProcessor.process [detected scaip message]]`
           )
           // Check if message is authenticated
-          if (config.spec.ex_scaip_auth_enabled) {
+          if (config.spec.ex_scaipAuthEnabled) {
             LOG.debug(
-              `core.processor.RequestProcessor.process [scaip auth provider = ${config.spec.ex_scaip_auth_provider.toLowerCase()}]`
+              `core.processor.RequestProcessor.process [scaip auth provider = ${config.spec.ex_scaipAuthProvider.toLowerCase()}]`
             )
             let auth = false
-            if (config.spec.ex_scaip_auth_provider.toLowerCase() === 'rest') {
+            if (config.spec.ex_scaipAuthProvider.toLowerCase() === 'rest') {
               // No yet implemented
             } else {
               auth = this.registrar.isAuthorized(request)

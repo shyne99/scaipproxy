@@ -23,8 +23,8 @@ module.exports = upSince => {
       dataSource: {
         provider: 'files_data_provider'
       },
-      ex_scaip_auth_provider: 'Internal',
-      ex_scaip_auth_enabled: true,
+      ex_scaipAuthProvider: 'Internal',
+      ex_scaipAuthEnabled: true,
       registrarIntf: 'External',
       restService: {
         keyStore: 'etc/certs/api-cert.jks',
