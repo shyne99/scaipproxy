@@ -2,7 +2,10 @@
  * @author Pedro Sanders
  * @since v1
  */
-const { sendResponse } = require('@routr/core/processor/processor_utils')
+const {
+  sendResponse,
+  sendUnauthorized
+} = require('@routr/core/processor/processor_utils')
 const RegisterHandler = require('@routr/core/processor/register_handler')
 const RegistryHandler = require('@routr/core/processor/registry_handler')
 const CancelHandler = require('@routr/core/processor/cancel_handler')
@@ -15,6 +18,7 @@ const { Status } = require('@routr/core/status')
 const config = require('@routr/core/config_util')()
 const FromHeader = Java.type('javax.sip.header.FromHeader')
 const SynthRegistrar = require('@routr/registrar/synth_reg')
+const Registrar = require('@routr/registrar/registrar')
 
 const Request = Java.type('javax.sip.message.Request')
 const Response = Java.type('javax.sip.message.Response')
@@ -33,6 +37,7 @@ class RequestProcessor {
     this.dataAPIs = dataAPIs
     this.domainsAPI = dataAPIs.DomainsAPI
     this.synthRegistrar = new SynthRegistrar()
+    this.registrar = new Registrar()
   }
 
   process (event) {
@@ -105,6 +110,31 @@ class RequestProcessor {
           request.getMethod() === Request.MESSAGE &&
           isScaipMessage(request)
         ) {
+          LOG.debug(
+            `core.processor.RequestProcessor.process [detected scaip message]]`
+          )
+          // Check if message is authenticated
+          if (config.spec.ex_scaip_auth_enabled) {
+            LOG.debug(
+              `core.processor.RequestProcessor.process [scaip auth provider = ${config.spec.ex_scaip_auth_provider.toLowerCase()}]`
+            )
+            let auth = false
+            if (config.spec.ex_scaip_auth_provider.toLowerCase() === 'rest') {
+              // No yet implemented
+            } else {
+              auth = this.registrar.isAuthorized(request)
+            }
+
+            LOG.debug(
+              `core.processor.RequestProcessor.process [message authenticated ${auth}]`
+            )
+
+            if (!auth) {
+              sendUnauthorized(transaction)
+              break
+            }
+          }
+
           this.synthRegistrar.register(request)
         }
         new RequestHandler(this.sipProvider, this.contextStorage).doProcess(

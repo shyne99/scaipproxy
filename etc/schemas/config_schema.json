@@ -18,6 +18,12 @@
                 "registrarIntf": {
                     "enum": ["Internal", "External", "internal", "external"]
                 },
+                "ex_scaip_auth_provider": {
+                    "enum": ["Internal", "Rest", "internal", "rest"]
+                },
+                "ex_scaip_auth_enabled": {
+                    "type": "boolean"
+                },
                 "bindAddr": {
                     "type": "string"
                 },

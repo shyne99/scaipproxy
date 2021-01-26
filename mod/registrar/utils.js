@@ -102,7 +102,7 @@ class RegistrarUtils {
     )
   }
 
-  static buildAuthHeader (user, authHeader) {
+  static buildAuthHeader (user, authHeader, method) {
     return {
       username: user.spec.credentials.username,
       secret: user.spec.credentials.secret,
@@ -112,7 +112,7 @@ class RegistrarUtils {
       nc: RegistrarUtils.getNonceCount(authHeader.getNonceCount()),
       cnonce: authHeader.getCNonce(),
       uri: authHeader.getURI().toString(),
-      method: 'REGISTER',
+      method,
       qop: authHeader.getQop(),
       response: authHeader.getResponse(),
       opaque: authHeader.getOpaque()

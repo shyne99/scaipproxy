@@ -86,7 +86,11 @@ class Registrar {
       return false
     }
 
-    const aHeaderJson = RegistrarUtils.buildAuthHeader(user, authHeader)
+    const aHeaderJson = RegistrarUtils.buildAuthHeader(
+      user,
+      authHeader,
+      request.getMethod()
+    )
     return AuthHelper.calcFromHeader(aHeaderJson).equals(
       authHeader.getResponse()
     )
