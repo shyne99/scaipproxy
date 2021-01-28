@@ -131,6 +131,8 @@ class RequestProcessor {
 
             if (!auth) {
               sendUnauthorized(transaction)
+              // Prevent rejecting request with same CSeq
+              this.sipProvider.getSipStack().removeTransaction(transaction)
               break
             }
           }
