@@ -52,8 +52,9 @@ class Registrar {
   }
 
   getUserFromAPI (request) {
-    const host = RegistrarUtils.getHost(request)
-    const username = request.getHeader(AuthorizationHeader.NAME).getUsername()
+    const authHeader = request.getHeader(AuthorizationHeader.NAME)
+    const host = authHeader.getRealm()
+    const username = authHeader.getUsername()
     let response = this.agentsAPI.getAgent(host, username)
 
     if (response.status === Status.OK) {
@@ -67,7 +68,7 @@ class Registrar {
     }
 
     LOG.debug(
-      `registrar.Registrar.getUserFromAPI [Can't authenticate user => ${username}]`
+      `registrar.Registrar.getUserFromAPI [Can't authenticate user => ${username} from ${host}]`
     )
 
     return null

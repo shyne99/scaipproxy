@@ -12,7 +12,6 @@ const config = require('@routr/core/config_util')()
 const ViaHeader = Java.type('javax.sip.header.ViaHeader')
 const ContactHeader = Java.type('javax.sip.header.ContactHeader')
 const FromHeader = Java.type('javax.sip.header.FromHeader')
-const ExpiresHeader = Java.type('javax.sip.header.ExpiresHeader')
 const SipFactory = Java.type('javax.sip.SipFactory')
 const addressFactory = SipFactory.getInstance().createAddressFactory()
 
