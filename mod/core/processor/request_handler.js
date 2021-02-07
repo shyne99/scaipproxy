@@ -73,8 +73,8 @@ class RequestHandler {
       .getAddress()
       .getURI()
 
-    // If the requestURI has the form sip:host it and this flag is activated
-    // the server will add the user part of the toHeader as the user fo the
+    // If the requestURI has the form sip:host and the config.spec.patchRequestURI flag
+    // is activated, then the server will add the user part of the toHeader as the user for the
     // requestURI
     if (config.spec.patchRequestURI && !requestURI.getUser()) {
       requestURI.setUser(toURI.getUser())
