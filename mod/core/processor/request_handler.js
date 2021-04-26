@@ -54,7 +54,8 @@ class RequestHandler {
         const response = data.response
 
         if (response.status == Status.NOT_FOUND) {
-          return sendResponse(transaction, Response.TEMPORARILY_UNAVAILABLE)
+          // We send unauthorized to force scaip devices to fail
+          return sendResponse(transaction, Response.UNAUTHORIZED)
         }
 
         // Call forking
