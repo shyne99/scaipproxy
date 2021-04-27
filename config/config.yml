@@ -1,5 +1,8 @@
 apiVersion: v1beta1
 spec:
+  bindAddr: 192.168.1.149
+  registrarIntf: Internal
+  useToAsAOR: true
   transport:
     - protocol: tcp
       port: 5060

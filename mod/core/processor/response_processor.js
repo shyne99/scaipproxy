@@ -56,13 +56,7 @@ class ResponseProcessor {
     response.addHeader(xRPortHeader)
     response.removeFirst(ViaHeader.NAME)
     if (isTransactional(event)) {
-      const context = this.contextStorage.findContext(
-        event.getClientTransaction().getBranchId()
-      )
-
-      if (context && context.serverTransaction) {
-        context.serverTransaction.sendResponse(response)
-      } else if (response.getHeader(ViaHeader.NAME) !== null) {
+      if (response.getHeader(ViaHeader.NAME) !== null) {
         this.sipProvider.sendResponse(response)
       }
     } else if (response.getHeader(ViaHeader.NAME) !== null) {

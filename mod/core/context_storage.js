@@ -15,7 +15,7 @@ const messageFactory = SipFactory.getInstance().createMessageFactory()
 
 class ContextStorage {
   constructor (sipProvider) {
-    this.storage = new ArrayList()
+    this.store = new Map()
     this.sipProvider = sipProvider
 
     postal.subscribe({
@@ -32,7 +32,14 @@ class ContextStorage {
   }
 
   addContext (context) {
-    this.storage.add(context)
+    if (context.clientTransaction) {
+      this.store.set(context.clientTransaction.getBranchId(), context)
+    }
+
+    if (context.serverTransaction) {
+      this.store.set(context.serverTransaction.getBranchId(), context)
+    }
+
     this.printContextStorageSize()
   }
 
@@ -40,17 +47,9 @@ class ContextStorage {
     LOG.debug(
       `core.ContextStorage.findContext [transactionId: ${transactionId}]`
     )
-    const iterator = this.storage.iterator()
-    while (iterator.hasNext()) {
-      const context = iterator.next()
 
-      if (
-        context.clientTransaction.getBranchId() === transactionId ||
-        context.serverTransaction.getBranchId() === transactionId
-      ) {
-        return context
-      }
-    }
+    if (this.store.has(transactionId)) this.store.get(transactionId)
+
     LOG.debug(
       `core.ContextStorage.findContext [context for transactionId: ${transactionId}] does not exist`
     )
@@ -60,21 +59,12 @@ class ContextStorage {
     LOG.debug(
       `core.ContextStorage.removeContext [transactionId: ${transactionId}]`
     )
-    const iterator = this.storage.iterator()
-    while (iterator.hasNext()) {
-      const context = iterator.next()
-      if (
-        context.clientTransaction.getBranchId() === transactionId ||
-        context.serverTransaction.getBranchId() === transactionId
-      ) {
-        iterator.remove()
-        LOG.debug(
-          `core.ContextStorage.removeContext [removed transactionId: ${transactionId}]`
-        )
-        this.printContextStorageSize()
-        return true
-      }
+
+    if (this.store.has(transactionId)) {
+      this.store.delete(transactionId)
+      return
     }
+
     LOG.debug(
       `core.ContextStorage.removeContext [transaction ongoing / won't remove transactionId: ${transactionId}]`
     )
@@ -82,7 +72,7 @@ class ContextStorage {
   }
 
   cancelTransaction (transactionId) {
-    const storage = this.getStorage()
+    /*const storage = this.getStorage()
     const iterator = storage.iterator()
 
     while (iterator.hasNext()) {
@@ -128,7 +118,7 @@ class ContextStorage {
 
         iterator.remove()
       }
-    }
+    }*/
   }
 
   getStorage () {
@@ -136,9 +126,9 @@ class ContextStorage {
   }
 
   printContextStorageSize () {
-    LOG.debug(
-      `core.ContextStorage [storage size => ${this.getStorage().size()}]`
-    )
+    //LOG.debug(
+    //  `core.ContextStorage [storage size => ${this.getStorage().size()}]`
+    //)
   }
 }
 

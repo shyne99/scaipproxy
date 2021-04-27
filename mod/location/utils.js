@@ -55,29 +55,8 @@ class LocatorUtils {
   }
 
   static aorAsObj (addressOfRecord) {
-    if (
-      typeof addressOfRecord === 'string' ||
-      addressOfRecord instanceof String
-    ) {
-      const rx1 = /sip?:(.*)@(.*)/
-      const rx2 = /sip?:(.*)/
-      if (rx1.test(addressOfRecord)) {
-        const addr = rx1.exec(addressOfRecord)
-        return addressFactory.createSipURI(addr[1], addr[2])
-      } else if (rx2.test(addressOfRecord)) {
-        const addr = rx2.exec(addressOfRecord)
-        return addressFactory.createSipURI(null, addr[1])
-      } else if (/tel:\d+/.test(addressOfRecord)) {
-        return addressFactory.createTelURI(addressOfRecord)
-      }
-    } else if (
-      addressOfRecord instanceof Java.type('javax.sip.address.SipURI') ||
-      addressOfRecord instanceof Java.type('javax.sip.address.TelURL')
-    ) {
-      return addressOfRecord
-    }
-
-    throw `Invalid AOR: ${addressOfRecord}`
+    const addr = addressOfRecord.split('sip:')[1].split('@')
+    return addressFactory.createSipURI(addr[0], addr[1])
   }
 
   static buildEgressRoute (addressOfRecord, gateway, number, domain) {

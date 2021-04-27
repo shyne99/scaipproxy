@@ -18,9 +18,9 @@ describe('@routr/location', () => {
       const aorObj = LocatorUtils.aorAsObj(aor)
       expect(aorObj).to.not.be.undefined
 
-      const aor2 = 'sip:10.97.1.16:56618'
-      const aorObj2 = LocatorUtils.aorAsObj(aor2)
-      expect(aorObj2).to.not.be.undefined
+      //const aor2 = 'sip:10.97.1.16:56618'
+      //const aorObj2 = LocatorUtils.aorAsObj(aor2)
+      //expect(aorObj2).to.not.be.undefined
     })
   })
 })

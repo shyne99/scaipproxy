@@ -1,27 +1,18 @@
 - apiVersion: v1beta1
   kind: Agent
   metadata:
-    name: John Doe
+    name: Alarm Receiver
   spec:
     credentials:
-      username: '1001'
-      secret: '1234'
-    domains: [sip.local]
+      username: 'alarm-test'
+      secret: '85GSE2ZV6qypd8'
+    domains: [scaipcd.camanio.com]
 - apiVersion: v1beta1
   kind: Agent
   metadata:
-    name: Janie Doe
+    name: Alarm Sender
   spec:
     credentials:
-      username: '1002'
-      secret: '1234'
-    domains: [sip.local]
-- apiVersion: v1beta1
-  kind: Agent
-  metadata:
-    name: Janie Doe
-  spec:
-    credentials:
-      username: '4001'
-      secret: '1234'
-    domains: [sip2.local]
+      username: '11011018'
+      secret: '85GSE2ZV6qypd8'
+    domains: [scaipcd.camanio.com]

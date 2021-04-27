@@ -35,44 +35,6 @@ class Processor {
         } catch (e) {
           LOG.error(e)
         }
-      },
-
-      processTimeout: event => {
-        const transactionId = event.isServerTransaction()
-          ? event.getServerTransaction().getBranchId()
-          : event.getClientTransaction().getBranchId()
-        postal.publish({
-          channel: 'processor',
-          topic: 'transaction.timeout',
-          data: {
-            transactionId: transactionId,
-            isServerTransaction: event.isServerTransaction()
-          }
-        })
-      },
-
-      processTransactionTerminated: event => {
-        const transactionId = event.isServerTransaction()
-          ? event.getServerTransaction().getBranchId()
-          : event.getClientTransaction().getBranchId()
-        postal.publish({
-          channel: 'processor',
-          topic: 'transaction.terminated',
-          data: {
-            transactionId: transactionId,
-            isServerTransaction: event.isServerTransaction()
-          }
-        })
-      },
-
-      processDialogTerminated: event => {
-        postal.publish({
-          channel: 'processor',
-          topic: 'dialog.terminated',
-          data: {
-            dialogId: event.getDialog().getDialogId()
-          }
-        })
       }
     })
   }

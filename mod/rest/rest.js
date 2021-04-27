@@ -25,9 +25,8 @@ const locationService = require('@routr/rest/location_service')
 const parameterAuthFilter = require('@routr/rest/parameter_auth_filter')
 const basicAuthFilter = require('@routr/rest/basic_auth_filter')
 const moment = require('moment')
-const merge = require('deepmerge')
 
-const LogsHandler = Java.type('io.routr.core.LogsHandler')
+// const LogsHandler = Java.type('io.routr.core.LogsHandler')
 const GRPCClient = Java.type('io.routr.core.GRPCClient')
 const Spark = Java.type('spark.Spark')
 const options = Java.type('spark.Spark').options
@@ -78,7 +77,7 @@ class Rest {
       System.exit(1)
     })
 
-    Spark.exception(Java.type('java.lang.Exception'), (e, req, res) => {
+    Spark.exception(Java.type('java.lang.Exception').class, (e, req, res) => {
       res.type('application/json')
       if (e.getMessage().equals('UNAUTHORIZED REQUEST')) {
         res.status(401)
@@ -114,7 +113,7 @@ class Rest {
     const configApi = new ConfigAPI(ds)
 
     // Warning: Experimental
-    webSocket(config.system.apiPath + '/system/logs-ws', LogsHandler)
+    //webSocket(config.system.apiPath + '/system/logs-ws', LogsHandler)
 
     options('/*', (req, res) => {
       const accessControlRequestHeaders = req.headers(

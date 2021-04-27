@@ -92,7 +92,7 @@ const getExpires = message => {
     return contactHeader.getExpires()
   }
   const expiresHeader = message.getHeader(ExpiresHeader.NAME)
-  // Considere instead triggering an exception
+  // Consider instead triggering an exception
   return expiresHeader ? expiresHeader.getExpires() : 0
 }
 

@@ -38,30 +38,35 @@ class RequestHandler {
   constructor (sipProvider, contextStorage) {
     this.sipProvider = sipProvider
     this.contextStorage = contextStorage
+    const self = this
 
     postal.subscribe({
       channel: 'locator',
       topic: 'endpoint.find.reply',
-      callback: (data, envelope) => {
+      callback: function (data) {
+        LOG.debug('SUSPECT 00')
         const requestInfo = requestStore.get(data.requestId)
-
-        if (requestInfo === null) return
-
-        const transaction = requestInfo.serverTransaction
-        const routeInfo = requestInfo.routeInfo
-        const request = requestInfo.request
-
-        const response = data.response
-
-        if (response.status == Status.NOT_FOUND) {
-          return sendResponse(transaction, Response.TEMPORARILY_UNAVAILABLE)
-        }
-
-        // Call forking
-        response.data.forEach(route =>
-          this.processRoute(transaction, request, route, routeInfo)
-        )
         requestStore.remove(data.requestId)
+
+        LOG.debug('SUSPECT 01')
+        if (requestInfo !== null && data.response) {
+          LOG.debug('SUSPECT 02')
+          const transaction = requestInfo.serverTransaction
+          const routeInfo = requestInfo.routeInfo
+          const request = requestInfo.request
+
+          const response = data.response
+
+          if (response.status == Status.NOT_FOUND) {
+            LOG.debug('SUSPECT 03')
+            return sendResponse(transaction, Response.TEMPORARILY_UNAVAILABLE)
+          }
+
+          LOG.debug('SUSPECT 04')
+          const route = response.data
+          self.processRoute(transaction, request, route, routeInfo)
+          LOG.debug('SUSPECT 05')
+        }
       }
     })
   }
@@ -122,27 +127,11 @@ class RequestHandler {
 
     if (!isInDialog(request)) {
       requestOut = configureRequestURI(requestOut, routeInfo, route)
-      requestOut = configurePrivacy(requestOut, routeInfo)
-      requestOut = configureIdentity(requestOut, route)
-      requestOut = configureXHeaders(requestOut, route)
+      //requestOut = configurePrivacy(requestOut, routeInfo)
+      //requestOut = configureIdentity(requestOut, route)
+      //requestOut = configureXHeaders(requestOut, route)
       requestOut = configureRecordRoute(requestOut, advertisedAddr, localAddr)
     }
-
-    if (routeInfo.getRoutingType() === RoutingType.DOMAIN_EGRESS_ROUTING) {
-      // XXX: Please document this situation :(
-      requestOut = configureCSeq(requestOut)
-    }
-
-    LOG.debug(
-      `core.processor.RequestHandler.processRoute [advertised addr ${JSON.stringify(
-        advertisedAddr
-      )}]`
-    )
-    LOG.debug(
-      `core.processor.RequestHandler.processRoute [route ${JSON.stringify(
-        route
-      )}]`
-    )
 
     this.sendRequest(transaction, request, requestOut)
   }
@@ -158,34 +147,9 @@ class RequestHandler {
         requestOut.clone()
       )
       clientTransaction.sendRequest()
-
-      LOG.debug(
-        `core.processor.RequestHandler.sendRequest [clientTransactionId is ${clientTransaction.getBranchId()}]`
-      )
-      LOG.debug(
-        `core.processor.RequestHandler.sendRequest [serverTransactionId is ${serverTransaction.getBranchId()}]`
-      )
-
-      this.saveContext(
-        request,
-        requestOut,
-        clientTransaction,
-        serverTransaction
-      )
     } catch (e) {
       connectionException(e, requestOut.getRequestURI().getHost())
     }
-  }
-
-  saveContext (request, requestOut, clientTransaction, serverTransaction) {
-    // Transaction context
-    const context = {}
-    context.clientTransaction = clientTransaction
-    context.serverTransaction = serverTransaction
-    context.method = request.getMethod()
-    context.requestIn = request
-    context.requestOut = requestOut
-    this.contextStorage.addContext(context)
   }
 }
 

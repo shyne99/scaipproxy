@@ -44,7 +44,7 @@ class Registrar {
         channel: 'locator',
         topic: 'endpoint.add',
         data: {
-          addressOfRecord: addressOfRecord,
+          addressOfRecord,
           route: RegistrarUtils.buildRoute(addressOfRecord, request, user)
         }
       })

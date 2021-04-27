@@ -39,10 +39,11 @@ const getAdvertisedAddr = (request, route, localAddr) => {
   // and we need to the the target address from the request uri.
   // If the routing is type IDR the initial request uri will be a local
   // domain and the isLocalnet function will return a wrong result.
-  const targetAddr =
+  /*const targetAddr =
     route && route.contactURI
       ? LocatorUtils.aorAsObj(route.contactURI).getHost()
-      : request.getRequestURI().getHost()
+      : request.getRequestURI().getHost()*/
+  const targetAddr = request.getRequestURI().getHost()
   const externAddr = config.spec.externAddr
   return config.spec.externAddr && needsExternAddress(route, targetAddr)
     ? { host: addrHost(externAddr), port: addrPort(externAddr, localAddr) }
@@ -158,19 +159,7 @@ const configureRecordRoute = (request, advertisedAddr, localAddr) => {
 }
 const configureRequestURI = (request, routeInfo, route) => {
   const requestOut = request.clone()
-  let uri
-
-  /*if (routeInfo.getRoutingType() === RoutingType.DOMAIN_EGRESS_ROUTING) {
-    LOG.error('TATATA01')
-    uri = `sip:${getToUser(request)}@${route.gwHost}`
-  } else if (isWebRTCClient(route)) {
-    LOG.error('TATATA02')
-    uri = `sip:${getUser(request)}@${route.received}:${route.rport}`
-  } else* {*/
-  uri = route.contactURI
-  //}
-
-  requestOut.setRequestURI(LocatorUtils.aorAsObj(uri))
+  requestOut.setRequestURI(LocatorUtils.aorAsObj(route.contactURI))
   return requestOut
 }
 const configurePrivacy = (request, routeInfo) => {

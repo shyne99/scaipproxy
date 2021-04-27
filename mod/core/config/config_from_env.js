@@ -68,12 +68,12 @@ const boolVals = [
 module.exports.getConfig = () => {
   let config = {
     system: {
-      env: Array.from(envsMap, ([key, value]) => {
+      /*env: Array.from(envsMap, ([key, value]) => {
         var a = {}
         a.var = key
         a.value = System.getenv(key)
         if (a.value) return a
-      }).filter(c => c != null)
+      }).filter(c => c != null)*/
     },
     spec: {
       dataSource: {}
@@ -81,7 +81,8 @@ module.exports.getConfig = () => {
   }
 
   const flatConfig = flat(config)
-  const keys = Array.from(envsMap, ([key]) => key)
+  //const keys = Array.from(envsMap, ([key]) => key)
+  const keys = []
 
   keys.forEach(key => {
     const env = boolVals.includes(key)

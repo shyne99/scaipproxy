@@ -30,33 +30,12 @@ class Locator {
   }
 
   addEndpoint (addressOfRecord, route) {
-    // This must be done here before we convert contactURI into a string
     route.contactURI = route.contactURI.toString()
-
+    const routString = JSON.stringify(route)
     LOG.debug(
-      `location.Locator.addEndpoint [adding endpoint ${addressOfRecord} with route => ${JSON.stringify(
-        route
-      )}]`
+      `location.Locator.addEndpoint [adding route for aor ${addressOfRecord} => ${routString}]`
     )
-    LOG.debug(
-      `location.Locator.addEndpoint [contactURI => ${LocatorUtils.aorAsObj(
-        route.contactURI
-      )}]`
-    )
-
-    let jsonRoutes = this.store.get(addressOfRecord)
-    let routes = jsonRoutes ? JSON.parse(jsonRoutes) : []
-
-    routes = routes
-      .filter(r => !LocatorUtils.expiredRouteFilter(r))
-      .filter(r => !LocatorUtils.sameSourceFilter(r, route))
-      .filter(
-        r => !LocatorUtils.contactURIFilter(r.contactURI, route.contactURI)
-      )
-
-    // See NOTE #1
-    routes.push(route)
-    this.store.put(addressOfRecord, JSON.stringify(routes))
+    this.store.put(addressOfRecord, routString)
   }
 
   findEndpoint (addressOfRecord) {
@@ -64,59 +43,15 @@ class Locator {
       `location.Locator.findEndpoint [lookup route for aor ${addressOfRecord}]`
     )
 
-    const jsonRoutes = this.store.get(addressOfRecord)
+    const route = this.store.get(addressOfRecord)
 
-    if (jsonRoutes !== null) {
-      let routes = JSON.parse(jsonRoutes)
-      routes = routes.filter(r => !LocatorUtils.expiredRouteFilter(r))
-      return CoreUtils.buildResponse(Status.OK, null, routes)
-    }
-
-    if (addressOfRecord.startsWith('tel:')) {
-      return this.findEndpointByTelUrl(addressOfRecord)
-    } else {
-      const tel = LocatorUtils.aorAsObj(addressOfRecord).getUser()
-      const response = this.findEndpointByTelUrl(`tel:${tel}`)
-      if (response.status === Status.OK) return response
-    }
-
-    const defaultRouteKey = this.store
-      .keySet()
-      .filter(key => new RegExp(key).test(addressOfRecord))
-
-    const parse = (s, k) => JSON.parse(s.get(k[0]))
-
-    return defaultRouteKey.length > 0
-      ? CoreUtils.buildResponse(
-          Status.OK,
-          null,
-          parse(this.store, defaultRouteKey)
-        )
-      : CoreUtils.buildResponse(Status.NOT_FOUND)
-  }
-
-  findEndpointByTelUrl (addressOfRecord) {
     LOG.debug(
-      `location.Locator.findEndpointByTelUrl [lookup route for aor ${addressOfRecord}]`
+      `location.Locator.findEndpoint [lookup route=${JSON.stringify(route)}]`
     )
-    const response = this.numbersAPI.getNumberByTelUrl(addressOfRecord)
-    if (response.status === Status.OK) {
-      const number = response.data
-      const jsonRoutes = this.store.get(number.spec.location.aorLink)
 
-      if (!jsonRoutes) return CoreUtils.buildResponse(Status.NOT_FOUND)
-
-      let routes = JSON.parse(jsonRoutes)
-      routes = routes.filter(r => !LocatorUtils.expiredRouteFilter(r))
-
-      return routes !== null
-        ? CoreUtils.buildResponse(Status.OK, null, routes)
-        : CoreUtils.buildResponse(
-            Status.NOT_FOUND,
-            `No route found for aorLink: ${number.spec.location.aorLink}`
-          )
-    }
-    return CoreUtils.buildResponse(Status.NOT_FOUND)
+    return route !== null
+      ? CoreUtils.buildResponse(Status.OK, null, JSON.parse(route))
+      : CoreUtils.buildResponse(Status.NOT_FOUND)
   }
 
   removeEndpoint (addressOfRecord, contactURI, isWildcard) {
@@ -164,7 +99,9 @@ class Locator {
       channel: 'locator',
       topic: 'endpoint.find',
       callback: data => {
+        LOG.debug(`cebiche001 data.addressOfRecord=${data.addressOfRecord}`)
         const response = this.findEndpoint(aorAsString(data.addressOfRecord))
+        LOG.debug('cebiche xxxx')
         postal.publish({
           channel: 'locator',
           topic: 'endpoint.find.reply',

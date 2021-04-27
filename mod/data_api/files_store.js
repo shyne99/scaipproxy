@@ -2,7 +2,6 @@
  * @author Pedro Sanders
  * @since v1
  */
-const DSUtils = require('@routr/data_api/utils')
 const getConfig = require('@routr/core/config_util')
 
 const HashMap = Java.type('java.util.HashMap')
@@ -11,10 +10,10 @@ const String = Java.type('java.lang.String')
 const Long = Java.type('java.lang.Long')
 const File = Java.type('java.io.File')
 const System = Java.type('java.lang.System')
-const ONE_MILLION = new Long(1000000)
+const ONE_MILLION = new Long(100)
 
 class FilesStore {
-  constructor (config = getConfig()) {
+  constructor () {
     this.collections = new HashMap()
   }
 
@@ -45,14 +44,15 @@ class FilesStore {
   getSharedHashMap (name) {
     let h = this.collections.get(name)
     if (h === null) {
-      h = ChronicleMap.of(String, String)
+      /*h = ChronicleMap.of(String.class, String.class)
         .averageKey('sip:john@bingenterprise.local')
         .averageValueSize(300)
         .entries(ONE_MILLION)
         .name(name)
         .createPersistedTo(
           new File(`${System.getProperty('user.dir')}/${name}.dat`)
-        )
+        )*/
+      h = new HashMap()
 
       this.collections.put(name, h)
     }
