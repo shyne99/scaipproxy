@@ -6,7 +6,6 @@ const { connectionException } = require('@routr/utils/exception_helpers')
 const { sendResponse } = require('@routr/core/processor/processor_utils')
 const { Status } = require('@routr/core/status')
 const config = require('@routr/core/config_util')()
-const postal = require('postal')
 
 const {
   getAdvertisedAddr,
@@ -15,60 +14,20 @@ const {
   configureProxyAuthorization,
   configureRequestURI,
   configureMaxForwards,
-  configurePrivacy,
   configureRecordRoute,
-  configureIdentity,
-  configureXHeaders,
-  configureCSeq,
   isInDialog
 } = require('@routr/core/processor/request_utils')
-const { RoutingType } = require('@routr/core/routing_type')
-const ObjectId = Java.type('org.bson.types.ObjectId')
 const Request = Java.type('javax.sip.message.Request')
 const Response = Java.type('javax.sip.message.Response')
 const ViaHeader = Java.type('javax.sip.header.ViaHeader')
 const ToHeader = Java.type('javax.sip.header.ToHeader')
-const LogManager = Java.type('org.apache.logging.log4j.LogManager')
-const ConcurrentHashMap = Java.type('java.util.concurrent.ConcurrentHashMap')
-const requestStore = new ConcurrentHashMap()
-
-const LOG = LogManager.getLogger()
+const LocatorUtils = require('@routr/location/utils')
 
 class RequestHandler {
-  constructor (sipProvider, contextStorage) {
+  constructor (sipProvider, contextStorage, locator) {
     this.sipProvider = sipProvider
     this.contextStorage = contextStorage
-    const self = this
-
-    postal.subscribe({
-      channel: 'locator',
-      topic: 'endpoint.find.reply',
-      callback: function (data) {
-        LOG.debug('SUSPECT 00')
-        const requestInfo = requestStore.get(data.requestId)
-        requestStore.remove(data.requestId)
-
-        LOG.debug('SUSPECT 01')
-        if (requestInfo !== null && data.response) {
-          LOG.debug('SUSPECT 02')
-          const transaction = requestInfo.serverTransaction
-          const routeInfo = requestInfo.routeInfo
-          const request = requestInfo.request
-
-          const response = data.response
-
-          if (response.status == Status.NOT_FOUND) {
-            LOG.debug('SUSPECT 03')
-            return sendResponse(transaction, Response.TEMPORARILY_UNAVAILABLE)
-          }
-
-          LOG.debug('SUSPECT 04')
-          const route = response.data
-          self.processRoute(transaction, request, route, routeInfo)
-          LOG.debug('SUSPECT 05')
-        }
-      }
-    })
+    this.locator = locator
   }
 
   doProcess (transaction, request, routeInfo) {
@@ -91,20 +50,13 @@ class RequestHandler {
     if (isInDialog(request)) {
       this.processRoute(transaction, request, null, routeInfo)
     } else {
-      const requestId = new ObjectId().toString()
-      requestStore.put(requestId, {
-        serverTransaction: transaction,
-        request,
-        routeInfo
-      })
-      postal.publish({
-        channel: 'locator',
-        topic: 'endpoint.find',
-        data: {
-          addressOfRecord: aor,
-          requestId: requestId
-        }
-      })
+      const response = this.locator.findEndpoint(LocatorUtils.aorAsString(aor))
+
+      if (response.status == Status.NOT_FOUND) {
+        return sendResponse(transaction, Response.TEMPORARILY_UNAVAILABLE)
+      }
+
+      this.processRoute(transaction, request, response.data, routeInfo)
     }
   }
 
@@ -123,13 +75,9 @@ class RequestHandler {
     requestOut = configureProxyAuthorization(requestOut)
     requestOut = configureRoute(requestOut, localAddr)
     requestOut = configureVia(requestOut, advertisedAddr)
-    //requestOut = configureContact(requestOut)
 
     if (!isInDialog(request)) {
       requestOut = configureRequestURI(requestOut, routeInfo, route)
-      //requestOut = configurePrivacy(requestOut, routeInfo)
-      //requestOut = configureIdentity(requestOut, route)
-      //requestOut = configureXHeaders(requestOut, route)
       requestOut = configureRecordRoute(requestOut, advertisedAddr, localAddr)
     }
 

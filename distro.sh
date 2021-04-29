@@ -35,4 +35,4 @@ build_for_platform() {
 
 #build_for_platform 'windows' 'jre-9.0.4_windows-x64_bin.tar.gz'
 #build_for_platform 'linux' 'jre-9.0.4_linux-x64_bin.tar.gz'
-build_for_platform 'osx' 'jre-9.0.1_osx-x64_bin.tar.gz'
+build_for_platform 'linux' 'jre-11.0.10_linux-x64_bin.tar.gz'

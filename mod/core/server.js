@@ -10,7 +10,6 @@ const GatewaysAPI = require('@routr/data_api/gateways_api')
 const NumbersAPI = require('@routr/data_api/numbers_api')
 const DSSelector = require('@routr/data_api/ds_selector')
 const Processor = require('@routr/core/processor/processor')
-const Locator = require('@routr/location/locator')
 const ContextStorage = require('@routr/core/context_storage')
 const showExternInfo = require('@routr/core/extern_info')
 const config = require('@routr/core/config_util')()
@@ -49,7 +48,6 @@ class Server {
     }
 
     this.dataAPIs = dataAPIs
-    this.locator = new Locator()
   }
 
   buildSipProvider (sipStack, transport) {

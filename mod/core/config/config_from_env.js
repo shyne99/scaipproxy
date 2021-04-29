@@ -12,10 +12,6 @@ envsMap.set('EXTERN_ADDR', 'spec.externAddr')
 envsMap.set('RECORD_ROUTE', 'spec.recordRoute')
 envsMap.set('REGISTRAR_INTF', 'spec.registrarIntf')
 envsMap.set('USE_TO_AS_AOR', 'spec.useToAsAOR')
-envsMap.set('PATCH_REQUEST_URI', 'spec.patchRequestURI')
-envsMap.set('EX_SCAIP_AUTH_PROVIDER', 'spec.ex_scaipAuthProvider')
-envsMap.set('EX_SCAIP_AUTH_ENABLED', 'spec.ex_scaipAuthEnabled')
-envsMap.set('PATCH_REQUEST_URI', 'spec.patchRequestURI')
 envsMap.set('ACCESS_CONTROL_LIST_DENY', 'spec.accessControlList.deny')
 envsMap.set('ACCESS_CONTROL_LIST_ALLOW', 'spec.accessControlList.allow')
 envsMap.set('REST_SERVICE_BIND_ADDR', 'spec.restService.bindAddr')
@@ -68,12 +64,12 @@ const boolVals = [
 module.exports.getConfig = () => {
   let config = {
     system: {
-      /*env: Array.from(envsMap, ([key, value]) => {
+      env: Array.from(envsMap, ([key, value]) => {
         var a = {}
         a.var = key
         a.value = System.getenv(key)
         if (a.value) return a
-      }).filter(c => c != null)*/
+      }).filter(c => c != null)
     },
     spec: {
       dataSource: {}
@@ -81,8 +77,7 @@ module.exports.getConfig = () => {
   }
 
   const flatConfig = flat(config)
-  //const keys = Array.from(envsMap, ([key]) => key)
-  const keys = []
+  const keys = Array.from(envsMap, ([key]) => key)
 
   keys.forEach(key => {
     const env = boolVals.includes(key)

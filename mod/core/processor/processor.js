@@ -2,7 +2,6 @@
  * @author Pedro Sanders
  * @since v1
  */
-const postal = require('postal')
 const RequestProcessor = require('@routr/core/processor/request_processor')
 const ResponseProcessor = require('@routr/core/processor/response_processor')
 const SipListener = Java.type('javax.sip.SipListener')
@@ -35,6 +34,22 @@ class Processor {
         } catch (e) {
           LOG.error(e)
         }
+      },
+
+      processTimeout: event => {
+        LOG.debug('Entered processTimeout')
+      },
+
+      processTransactionTerminated: event => {
+        LOG.debug('Entered processTransactionTerminated')
+      },
+
+      processIOException: event => {
+        LOG.debug('Entered processIOException')
+      },
+
+      processDialogTerminated: event => {
+        LOG.debug('Entered processDialogTerminated')
       }
     })
   }

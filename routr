@@ -16,7 +16,6 @@ run() {
     -Dlog4j.configurationFile=$LOG4J2 \
     -Dpolyglot.js.experimental-foreign-object-prototype=true \
     -Dpolyglot.js.nashorn-compat=true \
-    -Dnashorn.args=--language=es6 \
     $JAVA_OPTS \
     -classpath "$HOME/libs/*" \
     io.routr.core.Launcher

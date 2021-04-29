@@ -3,7 +3,6 @@
  * @since v1
  */
 const postal = require('postal')
-const RegistrarUtils = require('@routr/registrar/utils')
 const DSSelector = require('@routr/data_api/ds_selector')
 const AgentsAPI = require('@routr/data_api/agents_api')
 const FromHeader = Java.type('javax.sip.header.FromHeader')

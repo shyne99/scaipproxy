@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+CLASSPATH=$(for i in libs/*.jar ; do echo -n $i: ; done).
+
+jjs -Dnashorn.args=--language=es6  \
+    -Dlog4j.configurationFile=./config/log4j2.yml \
+    -doe=true \
+    -ot=true \
+    -strict=false \
+    -scripting=true \
+    -cp ${CLASSPATH} \
+    libs/jvm-npm.js \
+    ./base.js \
+    libs/server.bundle.js

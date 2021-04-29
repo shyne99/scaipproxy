@@ -2,54 +2,40 @@
  * @author Pedro Sanders
  * @since v1
  */
-const CoreUtils = require('@routr/core/utils')
 const LocatorUtils = require('@routr/location/utils')
 const DSUtils = require('@routr/data_api/utils')
 const isEmpty = require('@routr/utils/obj_util')
-const postal = require('postal')
-const validator = require('validator')
-const { Status } = require('@routr/core/status')
-
-const SipFactory = Java.type('javax.sip.SipFactory')
-const addressFactory = SipFactory.getInstance().createAddressFactory()
 const get = Java.type('spark.Spark').get
-const post = Java.type('spark.Spark').post
 const del = Java.type('spark.Spark').delete
 
-function routeFromString (routes) {
-  let contactInfo = ''
-
-  const rObj = routes.sort((a, b) => a.registeredOn > b.registeredOn)[0]
-  let r = `${rObj.contactURI};nat=${rObj.nat};expires=${rObj.expires}`
-
-  if (routes.length > 1) r = `${r} [...]`
-  contactInfo = `${contactInfo}${r}`
-
+function routeFromString (route) {
   return {
-    addressOfRecord: rObj.addressOfRecord,
-    contactInfo: contactInfo
+    addressOfRecord: route.addressOfRecord,
+    contactInfo: `${route.contactURI};nat=${route.nat};expires=${route.expires}`
   }
 }
 
 module.exports = function (store, grpc) {
   get('/location', (req, res) => {
-    const items = store
-      .withCollection('location')
-      .values()
-      .map(e => JSON.parse(e))
-      .filter(e => !e[0].thruGw)
-      .filter(
-        e => e.filter(r => !LocatorUtils.expiredRouteFilter(r)).length > 0
-      )
-      .map(e => routeFromString(e))
+    try {
+      const items = store
+        .withCollection('location')
+        .values()
+        .map(e => JSON.parse(e))
+        //.filter(e => !e[0].thruGw)
+        .filter(e => !LocatorUtils.expiredRouteFilter(e))
+        .map(e => routeFromString(e))
 
-    let page = 1
-    let itemsPerPage = 30
-    if (!isEmpty(req.queryParams('page'))) page = req.queryParams('page')
-    if (!isEmpty(req.queryParams('itemsPerPage')))
-      itemsPerPage = req.queryParams('itemsPerPage')
+      let page = 1
+      let itemsPerPage = 30
+      if (!isEmpty(req.queryParams('page'))) page = req.queryParams('page')
+      if (!isEmpty(req.queryParams('itemsPerPage')))
+        itemsPerPage = req.queryParams('itemsPerPage')
 
-    return JSON.stringify(DSUtils.paginate(items, page, itemsPerPage))
+      return JSON.stringify(DSUtils.paginate(items, page, itemsPerPage))
+    } catch (e) {
+      console.log(e)
+    }
   })
 
   /**

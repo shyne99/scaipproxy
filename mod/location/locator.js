@@ -55,7 +55,7 @@ class Locator {
   }
 
   removeEndpoint (addressOfRecord, contactURI, isWildcard) {
-    LOG.debug(
+    LOG.info(
       `location.Locator.removeEndpoint [remove route for aor => ${addressOfRecord}, isWildcard => ${isWildcard}]`
     )
 
@@ -92,24 +92,6 @@ class Locator {
       callback: data => {
         const aor = aorAsString(data.addressOfRecord)
         this.addEndpoint(aor, data.route)
-      }
-    })
-
-    postal.subscribe({
-      channel: 'locator',
-      topic: 'endpoint.find',
-      callback: data => {
-        LOG.debug(`cebiche001 data.addressOfRecord=${data.addressOfRecord}`)
-        const response = this.findEndpoint(aorAsString(data.addressOfRecord))
-        LOG.debug('cebiche xxxx')
-        postal.publish({
-          channel: 'locator',
-          topic: 'endpoint.find.reply',
-          data: {
-            response: response,
-            requestId: data.requestId
-          }
-        })
       }
     })
   }

@@ -7,12 +7,12 @@ const {
   sendUnauthorized
 } = require('@routr/core/processor/processor_utils')
 const RegisterHandler = require('@routr/core/processor/register_handler')
-const CancelHandler = require('@routr/core/processor/cancel_handler')
 const RequestHandler = require('@routr/core/processor/request_handler')
 const config = require('@routr/core/config_util')()
 const FromHeader = Java.type('javax.sip.header.FromHeader')
 const SynthRegistrar = require('@routr/registrar/synth_reg')
 const Registrar = require('@routr/registrar/registrar')
+const Locator = require('@routr/location/locator')
 
 const Request = Java.type('javax.sip.message.Request')
 const Response = Java.type('javax.sip.message.Response')
@@ -32,7 +32,8 @@ class RequestProcessor {
     this.registrar = new Registrar()
     this.messageHandler = new RequestHandler(
       this.sipProvider,
-      this.contextStorage
+      this.contextStorage,
+      new Locator()
     )
     this.registerHandler = new RegisterHandler()
   }
@@ -54,10 +55,7 @@ class RequestProcessor {
 
     switch (request.getMethod()) {
       case Request.MESSAGE:
-        if (
-          request.getMethod() === Request.MESSAGE &&
-          isScaipMessage(request)
-        ) {
+        if (isScaipMessage(request)) {
           // Check if message is authenticated
           if (config.spec.ex_scaipAuthEnabled) {
             LOG.debug(
@@ -66,15 +64,13 @@ class RequestProcessor {
 
             if (!this.registrar.isAuthorized(request)) {
               sendUnauthorized(transaction)
-              // Prevent rejecting request with same CSeq
-              // this.sipProvider.getSipStack().removeTransaction(transaction)
               break
             }
           }
-
           this.synthRegistrar.register(request)
         }
         this.messageHandler.doProcess(transaction, request, null)
+        break
       case Request.REGISTER:
         this.registerHandler.doProcess(transaction)
         break

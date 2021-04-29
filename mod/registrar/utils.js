@@ -40,7 +40,6 @@ function useInternalInterface (request) {
 }
 
 function getUpdatedContactURI (request, user) {
-  LOG.debug('aleluyahey')
   const contactHeader = request.getHeader(ContactHeader.NAME)
   const contactURI = contactHeader.getAddress().getURI()
   const viaHeader = request.getHeader(ViaHeader.NAME)
@@ -61,7 +60,6 @@ function getUpdatedContactURI (request, user) {
       contactURI.setPort(viaHeader.getRPort())
     }
   }
-  LOG.debug('aleluyaheyhay')
   return contactURI
 }
 
@@ -104,7 +102,6 @@ class RegistrarUtils {
 
   // TODO: Please consolidate all the route builders :(
   static buildRoute (addressOfRecord, request, user) {
-    LOG.debug('aleluya')
     const viaHeader = request.getHeader(ViaHeader.NAME)
     return {
       addressOfRecord: addressOfRecord,
