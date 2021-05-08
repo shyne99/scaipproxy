@@ -3,6 +3,7 @@
   "version": "1.0.0-rc6",
   "description": "Next-generation SIP Server",
   "scripts": {
+    "clean": "rimraf node_modules build libs .gradle .routr.salt *.dat",
     "pack": "./distro.sh",
     "prepack": "",
     "test": "cross-env ./etc/tests/tester2 mod/**/*.unit.test.js",
@@ -11,7 +12,7 @@
     "bundle": "webpack --config webpack.config.js --mode none",
     "prebundle": "cross-env ./gradlew build copyRuntimeLibs && npm run transpile && cp node_modules/jvm-npm/src/main/javascript/jvm-npm.js libs",
     "postbundle": "cp etc/lib/jain-sip-ri-1.2.X-SNAPSHOT.jar libs/jain-sip-ri-1.2.324.jar",
-    "transpile": "babel mod --out-dir node_modules/@routr",
+    "transpile": "tsc",
     "format": "prettier-standard 'mod/**/*.js'"
   },
   "lint-staged": {
@@ -25,13 +26,10 @@
     }
   },
   "dependencies": {
-    "babel-cli": "^6.26.0",
     "deepmerge": "^4.2.2",
     "flat": "^5.0.0",
     "ip-utils": "^2.4.0",
-    "lint-staged": "^10.0.9",
     "moment": "^2.22.2",
-    "npm": "^6.1.0",
     "paginate-array": "^2.1.0",
     "postal": "^2.0.5",
     "validator": "^11.0.0",
@@ -40,15 +38,17 @@
   "devDependencies": {
     "@types/node": "^13.13.2",
     "awesome-typescript-loader": "^5.2.1",
-    "babel-preset-env": "^1.7.0",
     "chai": "^4.2.0",
     "cross-env": "^5.2.0",
     "husky": "^4.2.3",
     "jvm-npm": "^0.1.1",
+    "lint-staged": "^10.0.9",
     "mocha": "^6.2.0",
+    "npm": "^6.1.0",
     "nyc": "^14.1.1",
     "prettier-standard": "^9.1.1",
     "rewire": "^5.0.0",
+    "rimraf": "^2.7.1",
     "sinon": "^9.0.1",
     "sinon-chai": "^3.5.0",
     "source-map-loader": "^0.2.4",
