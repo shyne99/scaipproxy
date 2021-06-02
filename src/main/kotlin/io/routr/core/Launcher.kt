@@ -16,25 +16,8 @@ class Launcher {
     @Throws(IOException::class, InterruptedException::class)
     fun launch() {
         val mainCtx = createJSContext(serverRunner, "server")
-        val registryCtx = createJSContext(registryRunner, "reg")
-        val routeLoaderCtx = createJSContext(routeLoaderRunner, "loader")
         createJSContext(restRunner, "nop")
         val server = GRPCServer(mainCtx)
-
-        val timer = Timer()
-        //timer.schedule(object : TimerTask() {
-        //    override fun run() {
-                // If it was null the error was reported already, but still need to
-                // consider that the object was never created
-        //        registryCtx.eval("js", "reg && reg.registerAll()")
-        //    }
-        //}, 10 * 1000.toLong(), 60 * 1000.toLong())
-
-        //timer.schedule(object : TimerTask() {
-        //   override fun run() {
-        //        routeLoaderCtx.eval("js", "loader.loadStaticRoutes()")
-        //    }
-        //}, 0, 120 * 1000.toLong())
         server.start()
         server.blockUntilShutdown()
     }

@@ -1,0 +1,6 @@
+{
+  "connectionString": "InstrumentationKey=key-goes-here;IngestionEndpoint=https://westeurope-5.in.applicationinsights.azure.com/",
+  "preview": {
+    "metricIntervalSeconds": 10
+  }
+}

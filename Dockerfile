@@ -1,4 +1,4 @@
-FROM debian:buster-20200414
+FROM adoptopenjdk/openjdk11:debian
 LABEL maintainer="Pedro Sanders <psanders@fonoster.com>"
 
 ENV LANG C.UTF-8

@@ -12,6 +12,8 @@ RESTART_CODE=123
 run() {
     cd $HOME
     $JAVA_HOME/bin/java \
+    -Xshare:off \
+    -javaagent:libs/applicationinsights-agent-3.1.0.jar \
     -DDATA=$DATA \
     -Dlog4j.configurationFile=$LOG4J2 \
     -Dpolyglot.js.experimental-foreign-object-prototype=true \
