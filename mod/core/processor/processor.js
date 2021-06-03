@@ -102,7 +102,7 @@ class Processor {
           const startTime = System.currentTimeMillis()
           this.requestProcessor.process(event)
           const endTime = System.currentTimeMillis()
-          const metricName = `sip.routr.request.${event
+          const metricName = `sip.scaipproxy.request.${event
             .getRequest()
             .getMethod()
             .toLowerCase()}.duration`
@@ -118,7 +118,7 @@ class Processor {
           const startTime = System.currentTimeMillis()
           this.responseProcessor.process(event)
           const endTime = System.currentTimeMillis()
-          const metricName = `sip.routr.response.${event
+          const metricName = `sip.scaipproxy.response.${event
             .getResponse()
             .getStatusCode()}.duration`
           telemetryClient.trackMetric(metricName, endTime - startTime)

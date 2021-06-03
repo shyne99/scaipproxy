@@ -41,6 +41,16 @@ tcpSignalingService:
     port: 5060
   annotations: {}
 
+# Certificates Management
+certs:
+  provided: false
+  name: routr-cert
+
+# Azure ApplicationInsights Configuration
+applicationinsights:
+  enabled: true
+  name: scaipproxy-applicationinsights
+
 # Routr internal configurations
 routr:
   userAgent: ""
@@ -90,7 +100,9 @@ fullnameOverride: ""
 podAnnotations: {}
 podSecurityContext: {}
 securityContext: {}
-resources: {}
+resources:
+  limits: {}
+  requests: {}
 nodeSelector: {}
 tolerations: []
 affinity: {}
