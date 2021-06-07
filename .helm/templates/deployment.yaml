@@ -146,7 +146,7 @@ spec:
           secretName: {{ .Values.certs.name }}
       {{- end }}
       {{- if eq .Values.applicationinsights.enabled true }}
-      - name: domains-cert
+      - name: applicationinsights
         secret:
           secretName: {{ .Values.applicationinsights.name }}
       {{- end }}
