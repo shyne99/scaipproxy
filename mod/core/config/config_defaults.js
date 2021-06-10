@@ -1,5 +1,5 @@
 const InetAddress = Java.type('java.net.InetAddress')
-const version = 'v1.0'
+const version = '1.0.0'
 const apiVersion = 'v1beta1'
 
 module.exports = upSince => {

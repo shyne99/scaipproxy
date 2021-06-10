@@ -1,7 +1,7 @@
 {
   "name": "routr",
-  "version": "1.0.0-rc6",
-  "description": "Next-generation SIP Server",
+  "version": "1.0.0",
+  "description": "Scaip Proxy Server",
   "scripts": {
     "clean": "rimraf node_modules build libs .gradle .routr.salt *.dat",
     "pack": "./distro.sh",

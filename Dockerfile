@@ -2,7 +2,7 @@ FROM adoptopenjdk/openjdk11:debian
 LABEL maintainer="Pedro Sanders <psanders@fonoster.com>"
 
 ENV LANG C.UTF-8
-ARG ROUTR_VERSION=1.0.0-rc6
+ARG ROUTR_VERSION=1.0.0
 
 RUN mkdir -p /opt/routr
 WORKDIR /opt/routr

@@ -2,6 +2,7 @@
  * @author Pedro Sanders
  * @since v1
  */
+const config = require('@routr/core/config_util')()
 const RequestProcessor = require('@routr/core/processor/request_processor')
 const ResponseProcessor = require('@routr/core/processor/response_processor')
 const SipListener = Java.type('javax.sip.SipListener')
@@ -22,6 +23,7 @@ const toCamelCase = str =>
 
 const trackRequestEvent = request => {
   const eventProperties = new HashMap()
+  eventProperties.put('SipServerVersion', config.system.version)
   eventProperties.put(
     'SipCallId',
     request.getHeader(CallIdHeader.NAME).getCallId()
