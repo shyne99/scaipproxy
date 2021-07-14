@@ -11,7 +11,6 @@
     "pretest": "npm run bundle && cp -a etc/lib/* libs/",
     "bundle": "webpack --config webpack.config.js --mode none",
     "prebundle": "cross-env ./gradlew build copyRuntimeLibs && npm run transpile && cp node_modules/jvm-npm/src/main/javascript/jvm-npm.js libs",
-    "postbundle": "cp etc/lib/jain-sip-ri-1.2.X-SNAPSHOT.jar libs/jain-sip-ri-1.2.324.jar",
     "transpile": "tsc",
     "format": "prettier-standard 'mod/**/*.js'"
   },
