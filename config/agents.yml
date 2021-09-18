@@ -1,27 +1,19 @@
 - apiVersion: v1beta1
   kind: Agent
   metadata:
-    name: John Doe
+    name: Alarm
   spec:
     credentials:
-      username: '1001'
-      secret: '1234'
+      username: '111111'
+      secret: 'changeit'
     domains: [sip.local]
+
 - apiVersion: v1beta1
   kind: Agent
   metadata:
-    name: Janie Doe
+    name: Alarm Receiver
   spec:
     credentials:
-      username: '1002'
-      secret: '1234'
+      username: 'arc'
+      secret: 'changeit'
     domains: [sip.local]
-- apiVersion: v1beta1
-  kind: Agent
-  metadata:
-    name: Janie Doe
-  spec:
-    credentials:
-      username: '4001'
-      secret: '1234'
-    domains: [sip2.local]

@@ -42,13 +42,13 @@ const trackRequestEvent = request => {
       .getAddress()
       .getURI()
   )
-  eventProperties.put(
-    'SipUserAgent',
-    request
-      .getHeader(UserAgentHeader.NAME)
-      .getProduct()
-      .next()
-  )
+
+  const userAgent = request.getHeader(UserAgentHeader.NAME)
+  if (userAgent) {
+    eventProperties.put('SipUserAgent', userAgent.getProduct().next())
+  } else {
+    eventProperties.put('SipUserAgent', 'Unknown')
+  }
   const eventName =
     'ScaipProxyRequest' + toCamelCase(request.getMethod().toString())
   telemetryClient.trackEvent(eventName, eventProperties, null)

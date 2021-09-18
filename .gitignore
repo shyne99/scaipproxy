@@ -25,6 +25,7 @@ mod/vendor
 jre
 package-lock.json
 logs
+bin
 
 # User-specific stuff:
 .idea/workspace.xml

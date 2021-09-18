@@ -10,6 +10,7 @@ const RegisterHandler = require('@routr/core/processor/register_handler')
 const RequestHandler = require('@routr/core/processor/request_handler')
 const config = require('@routr/core/config_util')()
 const FromHeader = Java.type('javax.sip.header.FromHeader')
+const ViaHeader = Java.type('javax.sip.header.ViaHeader')
 const SynthRegistrar = require('@routr/registrar/synth_reg')
 const Registrar = require('@routr/registrar/registrar')
 const Locator = require('@routr/location/locator')
@@ -19,8 +20,16 @@ const Response = Java.type('javax.sip.message.Response')
 const LogManager = Java.type('org.apache.logging.log4j.LogManager')
 const LOG = LogManager.getLogger()
 
-// Experimental feature
-const isScaipMessage = r => r.getHeader(FromHeader.NAME).getTag() === '286524'
+// Experimental features
+const isEssenceMessage = r => r.getHeader(FromHeader.NAME).getTag() === '286524'
+const isClimaxDevice = r => r.getHeader(ViaHeader.NAME).getBranch() === 'z9hG4bK-0001'
+const getXMLValue= (tagName, xmlStr) => {
+  var tagValue = xmlStr.substring(
+      xmlStr.lastIndexOf(tagName) + tagName.length,
+      xmlStr.lastIndexOf(tagName.replace("<", "</"))
+  );
+  return tagValue;
+}
 
 class RequestProcessor {
   constructor (sipProvider, dataAPIs, contextStorage) {
@@ -55,7 +64,21 @@ class RequestProcessor {
 
     switch (request.getMethod()) {
       case Request.MESSAGE:
-        if (isScaipMessage(request)) {
+        if (isClimaxDevice(request)) {
+          // Get user from payload
+          const user = getXMLValue("<cid>",String.fromCharCode.apply(null, request.getContent()))
+          // Update requrest to allow consistent messaging
+          const fromHeader = request.getHeader(FromHeader.NAME)
+          const address = fromHeader.getAddress()
+          const uri = address.getURI()
+          uri.setUser(user)
+          address.setURI(uri)
+          fromHeader.setAddress(address)
+          request.setHeader(fromHeader)
+          // Request sythetic registration since device doesn't
+          // know how to REGISTEr
+          this.synthRegistrar.register(request)
+        } else if (isEssenceMessage(request)) {
           // Check if message is authenticated
           if (config.spec.ex_scaipAuthEnabled) {
             LOG.debug(
