@@ -221,11 +221,21 @@ const configureXHeaders = (request, route) => {
   }
   return requestOut
 }
+const configureXProxyReceived = request => {
+  const requestOut = request.clone()
+  const proxyReceived = headerFactory.createHeader(
+    'X-Proxy-Received',
+    new Date().toISOString()
+  )
+  requestOut.setHeader(proxyReceived)
+  return requestOut
+}
 const isInDialog = request =>
   request.getHeader(ToHeader.NAME).getTag() !== null &&
   request.getHeader(FromHeader.NAME).getTag() !== null
 
 module.exports.getAdvertisedAddr = getAdvertisedAddr
+module.exports.configureXProxyReceived = configureXProxyReceived
 module.exports.configureRoute = configureRoute
 module.exports.configureVia = configureVia
 module.exports.configureProxyAuthorization = configureProxyAuthorization
