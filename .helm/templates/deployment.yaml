@@ -41,7 +41,7 @@ spec:
         - name: LOCALNETS
           value: {{ join "," .Values.routr.localnets }}
         - name: DIGEST_AUTH_ADDR
-          value {{ join "," .Values.routr.digestAuthAddr }}
+          value: {{ join "," .Values.routr.digestAuthAddr }}
         - name: USER_AGENT
           value: {{ .Values.routr.userAgent | quote }}
         - name: BIND_ADDR
