@@ -14,21 +14,22 @@ const ViaHeader = Java.type('javax.sip.header.ViaHeader')
 const SynthRegistrar = require('@routr/registrar/synth_reg')
 const Registrar = require('@routr/registrar/registrar')
 const Locator = require('@routr/location/locator')
-
 const Request = Java.type('javax.sip.message.Request')
 const Response = Java.type('javax.sip.message.Response')
 const LogManager = Java.type('org.apache.logging.log4j.LogManager')
 const LOG = LogManager.getLogger()
+const checkAuthorization = require('@routr/core/processor/auth_util')
 
 // Experimental features
 const isEssenceMessage = r => r.getHeader(FromHeader.NAME).getTag() === '286524'
-const isClimaxDevice = r => r.getHeader(ViaHeader.NAME).getBranch() === 'z9hG4bK-0001'
-const getXMLValue= (tagName, xmlStr) => {
+const isClimaxDevice = r =>
+  r.getHeader(ViaHeader.NAME).getBranch() === 'z9hG4bK-0001'
+const getXMLValue = (tagName, xmlStr) => {
   var tagValue = xmlStr.substring(
-      xmlStr.lastIndexOf(tagName) + tagName.length,
-      xmlStr.lastIndexOf(tagName.replace("<", "</"))
-  );
-  return tagValue;
+    xmlStr.lastIndexOf(tagName) + tagName.length,
+    xmlStr.lastIndexOf(tagName.replace('<', '</'))
+  )
+  return tagValue
 }
 
 class RequestProcessor {
@@ -66,7 +67,10 @@ class RequestProcessor {
       case Request.MESSAGE:
         if (isClimaxDevice(request)) {
           // Get user from payload
-          const user = getXMLValue("<cid>",String.fromCharCode.apply(null, request.getContent()))
+          const user = getXMLValue(
+            '<cid>',
+            String.fromCharCode.apply(null, request.getContent())
+          )
           // Update requrest to allow consistent messaging
           const fromHeader = request.getHeader(FromHeader.NAME)
           const address = fromHeader.getAddress()
@@ -85,7 +89,10 @@ class RequestProcessor {
               `core.processor.RequestProcessor.process [scaip auth provider = ${config.spec.ex_scaipAuthProvider.toLowerCase()}]`
             )
 
-            if (!this.registrar.isAuthorized(request)) {
+            if (
+              !this.registrar.isAuthorized(request) &&
+              !checkAuthorization(request)
+            ) {
               sendUnauthorized(transaction)
               break
             }

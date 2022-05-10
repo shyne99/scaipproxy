@@ -4,7 +4,7 @@
   "description": "Scaip Proxy Server",
   "scripts": {
     "clean": "rimraf node_modules build libs .gradle .routr.salt *.dat",
-    "pack": "./distro.sh",
+    "distro": "./distro.sh",
     "prepack": "",
     "test": "cross-env ./etc/tests/tester2 mod/**/*.unit.test.js",
     "test-kt": "gradle test --tests *Test",
