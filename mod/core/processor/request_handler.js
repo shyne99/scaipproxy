@@ -15,6 +15,7 @@ const {
   configureRequestURI,
   configureMaxForwards,
   configureRecordRoute,
+  configureXProxyReceived,
   isInDialog
 } = require('@routr/core/processor/request_utils')
 const Request = Java.type('javax.sip.message.Request')
@@ -75,6 +76,7 @@ class RequestHandler {
     requestOut = configureProxyAuthorization(requestOut)
     requestOut = configureRoute(requestOut, localAddr)
     requestOut = configureVia(requestOut, advertisedAddr)
+    requestOut = configureXProxyReceived(requestOut)
 
     if (!isInDialog(request)) {
       requestOut = configureRequestURI(requestOut, routeInfo, route)
