@@ -53,17 +53,24 @@ function buildAuthHeader (username, authHeader, method) {
 function checkAuthorization (request) {
   const authHeader = request.getHeader(AuthorizationHeader.NAME)
 
+  LOG.debug(`Checking authorization for ${authHeader?.getUsername()}`)
+
   if (!authHeader) return false
 
   const username = getUsername(request)
 
   const authRequest = buildAuthHeader(username, authHeader, request.getMethod())
 
+  LOG.debug(
+    `Sending auth request to auth server: ${JSON.stringify(authRequest)}`
+  )
+
   try {
     return auth.authenticate(JSON.stringify(authRequest))
   } catch (e) {
     LOG.warn(e.message | e)
   }
+
   return false
 }
 

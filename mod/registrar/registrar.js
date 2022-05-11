@@ -12,6 +12,8 @@ const AgentsAPI = require('@routr/data_api/agents_api')
 const PeersAPI = require('@routr/data_api/peers_api')
 const AuthorizationHeader = Java.type('javax.sip.header.AuthorizationHeader')
 const LogManager = Java.type('org.apache.logging.log4j.LogManager')
+const FromHeader = Java.type('javax.sip.header.FromHeader')
+const checkAuthorization = require('@routr/core/processor/auth_util')
 
 const LOG = LogManager.getLogger()
 
@@ -21,33 +23,26 @@ class Registrar {
     this.agentsAPI = new AgentsAPI(DSSelector.getDS())
   }
 
-  register (r) {
-    // Prevents any chances of overwriting the original object
-    const request = r.clone()
-    let user
-
-    if (this.isAuthorized(request)) {
-      // Todo: Avoid making this second trip to the API
-      user = this.getUserFromAPI(request)
-    } else {
-      return false
+  register (request) {
+    if (this.isAuthorized(request) || checkAuthorization(request)) {
+      const uri = request
+        .getHeader(FromHeader.NAME)
+        .getAddress()
+        .getURI()
+      this.addEndpoint(uri.toString(), request)
+      return true
     }
-
-    const aors = RegistrarUtils.generateAors(request, user)
-    this.addEndpoints(aors, request, user)
-    return true
+    return false
   }
 
-  addEndpoints (aors, request, user) {
-    aors.forEach(addressOfRecord => {
-      postal.publish({
-        channel: 'locator',
-        topic: 'endpoint.add',
-        data: {
-          addressOfRecord,
-          route: RegistrarUtils.buildRoute(addressOfRecord, request, user)
-        }
-      })
+  addEndpoint (addressOfRecord, request) {
+    postal.publish({
+      channel: 'locator',
+      topic: 'endpoint.add',
+      data: {
+        addressOfRecord,
+        route: RegistrarUtils.buildRoute(addressOfRecord, request)
+      }
     })
   }
 
