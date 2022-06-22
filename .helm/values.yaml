@@ -64,6 +64,12 @@ routr:
   useToAsAOR: false
   patchRequestURI: false
   registrarIntf: External
+  javaOpts: ""
+  livenessProbe:
+    initialDelaySeconds: 15
+    periodSeconds: 5
+    successThreshold: 1
+    failureThreshold: 3  
   accessControlList:
     deny: []
     allow: []

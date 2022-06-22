@@ -2,10 +2,10 @@ apiVersion: v2
 name: routr
 description: Scaip Proxy Server
 type: application
-version: 0.0.11
+version: 0.0.12
 appVersion: 1.0.0-rc5
 sources:
-  - https://github.com/psanders/scaipserver
+  - https://github.com/fonoster/scaipproxy
 icon: https://routr.io/site_assets/images/avatar.png
 keywords: [sip, scaip, proxy]
 maintainers:

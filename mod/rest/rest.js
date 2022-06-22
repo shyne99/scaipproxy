@@ -136,6 +136,13 @@ class Rest {
       before('/*', (req, res) => {
         res.header('Access-Control-Allow-Origin', '*')
         if (
+          req.pathInfo().endsWith('/system/status') &&
+          req.requestMethod() == 'GET'
+        ) {
+          return
+        }
+
+        if (
           req.pathInfo().endsWith('/credentials') ||
           req.pathInfo().endsWith('/token')
         ) {

@@ -24,9 +24,8 @@ RUN apt-get update \
 
 EXPOSE 4567
 EXPOSE 5060/udp
-EXPOSE 5060
-EXPOSE 5061
-EXPOSE 5062
-EXPOSE 5063
 
 CMD ["./routr"]
+
+HEALTHCHECK --interval=5s --timeout=5s --retries=3 \
+  CMD ["curl", "-k", "--fail", "--silent", "--show-error", "--connect-timeout", "2", "-L", "https://localhost:4567/api/v1beta1/system/status"]
