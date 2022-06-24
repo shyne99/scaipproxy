@@ -3,7 +3,7 @@ name: routr
 description: Scaip Proxy Server
 type: application
 version: 0.0.12
-appVersion: 1.0.0-rc5
+appVersion: scaip-20220622.1
 sources:
   - https://github.com/fonoster/scaipproxy
 icon: https://routr.io/site_assets/images/avatar.png
