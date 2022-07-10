@@ -1,6 +1,6 @@
 {
   "name": "routr",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Scaip Proxy Server",
   "scripts": {
     "clean": "rimraf node_modules build libs .gradle .routr.salt *.dat",

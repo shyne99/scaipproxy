@@ -27,6 +27,7 @@ jre
 package-lock.json
 logs
 bin
+${sys:DATA}
 
 # User-specific stuff:
 .idea/workspace.xml
