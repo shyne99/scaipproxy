@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE scenario SYSTEM "sipp.dtd">
+
+<scenario name="MRQ with authentication">
+  <Global variables="requestURI,from,to" />
+
+  <recv request="MESSAGE" crlf="true" />
+
+  <send>
+    <![CDATA[
+      SIP/2.0 200 OK
+      [last_Via:]
+      [last_From:]
+      [last_To:];tag=z9hG
+      [last_Call-ID:]
+      [last_CSeq:]
+      Content-Length: 0
+    ]]>
+  </send>
+
+  <send>
+    <![CDATA[MESSAGE sip:[$requestURI] SIP/2.0
+      Via: SIP/2.0/[transport] [local_ip]:[local_port];branch=z9hG
+      Max-Forwards: 70
+      From: <sip:[$from]>;tag=28652xx
+      To: <sip:[$to]>
+      Call-ID: [call_id]
+      CSeq: 2023 MESSAGE
+      User-Agent: ARC Tester
+      Accept: text/plain,application/im-iscomposing+xml
+      Content-Type: application/scaip+xml
+      Content-Length: [len]
+
+      <mrs><ref>00020486</ref><snu>0</snu></mrs>
+    ]]>
+  </send>
+
+  <recv response="200"></recv>
+
+</scenario>

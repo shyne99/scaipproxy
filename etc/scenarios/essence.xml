@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE scenario SYSTEM "sipp.dtd">
+
+<scenario name="Essence MRQ with authentication">
+  <Global variables="requestURI,from,to,body" />
+  <send>
+    <![CDATA[MESSAGE sip:[$requestURI] SIP/2.0
+      Via: SIP/2.0/[transport] [local_ip]:[local_port];branch=z9hG
+      Max-Forwards: 70
+      From: <sip:[$from]>;tag=286524
+      To: <sip:[$to]>
+      Call-ID: [call_id]
+      CSeq: 1 MESSAGE
+      User-Agent: Essence Simulator
+      Content-Type: application/scaip+xml
+      Content-Length: [len]
+
+      [$body]
+    ]]>
+  </send>
+
+  <recv response="100" optional="true" />
+
+  <recv response="401" auth="true" rtd="true" />
+
+  <send>
+    <![CDATA[MESSAGE sip:[$requestURI] SIP/2.0
+      Via: SIP/2.0/[transport] [local_ip]:[local_port];branch=z9hG
+      Max-Forwards: 70
+      From: <sip:[$from]>;tag=286524
+      To: <sip:[$to]>
+      Call-ID: [call_id]
+      CSeq: 2 MESSAGE
+      User-Agent: Essence Simulator
+      Content-Type: application/scaip+xml
+      [authentication]
+      Content-Length: [len]
+
+      [$body]
+    ]]>
+  </send>
+
+  <recv response="200"></recv>
+
+  <recv request="MESSAGE"></recv>
+
+  <send>
+    <![CDATA[
+      SIP/2.0 200 OK
+      [last_Via:]
+      [last_From:]
+      [last_To:];tag=z9hG
+      [last_Call-ID:]
+      [last_CSeq:]
+      Content-Length: 0
+    ]]>
+  </send>
+</scenario>
+
