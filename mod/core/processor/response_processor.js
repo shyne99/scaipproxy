@@ -44,7 +44,7 @@ class ResponseProcessor {
   sendResponse (event) {
     const response = event.getResponse().clone()
     const viaHeader = response.getHeader(ViaHeader.NAME)
-    const xReceivedHeader = headerFactory.createHeader(
+    /*const xReceivedHeader = headerFactory.createHeader(
       'X-Inf-Received',
       viaHeader.getReceived()
     )
@@ -53,7 +53,7 @@ class ResponseProcessor {
       `${viaHeader.getRPort()}`
     )
     response.addHeader(xReceivedHeader)
-    response.addHeader(xRPortHeader)
+    response.addHeader(xRPortHeader)*/
     response.removeFirst(ViaHeader.NAME)
     if (isTransactional(event)) {
       if (response.getHeader(ViaHeader.NAME) !== null) {
