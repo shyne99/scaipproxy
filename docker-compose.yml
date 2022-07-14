@@ -1,10 +1,10 @@
 version: '3.7'
 services:
 
-  routr:
+  scaipproxy:
     build:
       context: .
-    image: fonoster/routr:scaip-20220709.3
+    image: fonoster/scaipproxy:latest
     depends_on: [redis]
     environment:
       DATA_SOURCE_PROVIDER: redis_data_provider
@@ -20,3 +20,23 @@ services:
     hostname: redis
     expose: [6379]
 
+  seet: 
+    image: fonoster/seet:latest
+    depends_on: [scaipproxy, provisioner]
+    volumes:
+      - ./etc/seet.json:/seet.json
+      - ./etc/scenarios:/scenarios
+
+  provisioner:
+    image: fonoster/routr-ctl
+    depends_on: [scaipproxy]
+    entrypoint: >
+      /bin/sh -c "
+        set -e;
+        while ! nc -z scaipproxy 4567;do sleep 0.1; done
+        rctl login https://scaipproxy:4567/api/v1beta1 -u admin -p changeit;
+        rctl create -f /config/domains.yml
+        rctl create -f /config/agents.yml
+      "
+    volumes:
+      - ./config:/config:ro
