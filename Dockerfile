@@ -1,19 +1,19 @@
 ##
 ## Build
 ##
-FROM debian:bullseye-slim as builder
+FROM adoptopenjdk/openjdk11:jdk-11.0.11_9-debian-slim as builder
 
 COPY . /build/
 WORKDIR /build
 
-ENV JAVA_HOME "/build/graalvm-ce-java11-21.3.2"
+# ENV JAVA_HOME "/build/graalvm-ce-java11-21.3.2"
 ENV GRAALVM_HOME "/build/graalvm-ce-java11-21.3.2"
 
 RUN apt-get update && apt-get install -y npm wget \
-  && wget https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-21.3.2/graalvm-ce-java11-linux-amd64-21.3.2.tar.gz \
-  && tar -xzf graalvm-ce-java11-linux-amd64-21.3.2.tar.gz \
-  && /build/graalvm-ce-java11-21.3.2/bin/gu install nodejs
-  #&& npm install && npm test && npm pack
+  && wget https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-21.1.0/graalvm-ce-java11-linux-amd64-21.1.0.tar.gz \
+  && tar -xzf graalvm-ce-java11-linux-amd64-21.1.0.tar.gz \
+  # && /build/graalvm-ce-java11-21.3.2/bin/gu install nodejs \
+  && npm install && npm test && npm run distro
 
 ##
 ## Runner
