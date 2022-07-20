@@ -11,7 +11,7 @@ node_modules
 .nyc_output
 *.tar.gz
 *.zip
-*.dat
+location.dat
 .routr.salt
 build
 libs
