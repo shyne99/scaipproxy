@@ -24,6 +24,11 @@ const checkAuthorization = require('@routr/core/processor/auth_util')
 const isEssenceMessage = r => r.getHeader(FromHeader.NAME).getTag() === '286524'
 const isClimaxDevice = r =>
   r.getHeader(ViaHeader.NAME).getBranch() === 'z9hG4bK-0001'
+const isClimaxDeviceV2 = r =>
+  r
+    .getHeader(ViaHeader.NAME)
+    .getBranch()
+    .includes('z9hG4bK-000')
 const getXMLValue = (tagName, xmlStr) => {
   var tagValue = xmlStr.substring(
     xmlStr.lastIndexOf(tagName) + tagName.length,
@@ -65,7 +70,7 @@ class RequestProcessor {
 
     switch (request.getMethod()) {
       case Request.MESSAGE:
-        if (isClimaxDevice(request)) {
+        /*if (isClimaxDevice(request)) {
           // Get user from payload
           const user = getXMLValue(
             '<cid>',
@@ -80,9 +85,11 @@ class RequestProcessor {
           fromHeader.setAddress(address)
           request.setHeader(fromHeader)
           // Request sythetic registration since device doesn't
-          // know how to REGISTEr
+          // know how to REGISTER
           this.synthRegistrar.register(request)
-        } else if (isEssenceMessage(request)) {
+        } else*/
+
+        if (isEssenceMessage(request) || isClimaxDeviceV2(request)) {
           // Check if message is authenticated
           if (config.spec.ex_scaipAuthEnabled) {
             LOG.debug(

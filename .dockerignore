@@ -1,5 +1,9 @@
-# Ignore everything
-**
-
-# Nothing else matters :)
-!/*_linux-x64_bin.tar.gz
+node_modules
+libs
+logs
+bin
+.gradle*
+.helm
+build
+gradlew.bat
+NOTES.md
