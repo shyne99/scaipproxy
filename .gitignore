@@ -26,6 +26,7 @@ mod/vendor
 jre
 logs
 bin
+!/etc/customjre/bin
 ${sys:DATA}
 
 # User-specific stuff:
