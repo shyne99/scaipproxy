@@ -1,7 +1,7 @@
-# Routr's image repo and pull policy
+# Server's image repo and pull policy
 # We recommend using 'Always'
 image:
-  repository: fonoster/routr
+  repository: fonoster/scaipproxy
   pullPolicy: Always
   tag: ""
 
@@ -47,16 +47,16 @@ tcpSignalingService:
 # Certificates Management
 certs:
   provided: false
-  name: routr-cert
+  name: scaipproxy-cert
 
 # Azure ApplicationInsights Configuration
 applicationinsights:
-  enabled: true
+  enabled: false
   name: scaipproxy-applicationinsights
 
-# Routr internal configurations
-routr:
-  userAgent: ""
+# Server Configuration
+scaipproxy:
+  userAgent: "SCAIPProxy"
   bindAddr: ""
   externAddr: ""
   localnets: []

@@ -1,12 +1,12 @@
 apiVersion: v2
-name: routr
-description: Scaip Proxy Server
+name: scaipproxy
+description: SCAIPProxy Server
 type: application
-version: 0.0.12
-appVersion: scaip-20220622.1
+version: 0.0.13
+appVersion: latest
 sources:
   - https://github.com/fonoster/scaipproxy
-icon: https://routr.io/site_assets/images/avatar.png
+icon: https://scaipproxy.io/site_assets/images/avatar.png
 keywords: [sip, scaip, proxy]
 maintainers:
   - name: psanders
