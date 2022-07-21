@@ -1,11 +1,5 @@
-# Scaip Server
+## SCAIP prototocol processing server
 
-To build the Scaip Server you need to:
+![publish to docker](https://github.com/fonoster/scaipproxy/workflows/publish%20to%20docker%20hub/badge.svg)
 
-```bash
-npm test
-npm run pack
-docker-compose build routr
-```
-
-> Ensure GRAALVM_HOME and JAVA_HOME are set and Java version is 11+
+This repository contains a dockerized distribution of The SCAIPProxy.
