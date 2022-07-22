@@ -118,13 +118,6 @@ spec:
           containerPort: {{ .Values.udpSignalingService.containerPort | default .Values.udpSignalingService.port }}
           protocol: UDP
         {{- end }}
-        {{- if eq .Values.tcpSignalingService.enabled true }}
-        {{- range .Values.tcpSignalingService.ports }}
-        - name: {{ .name }}
-          containerPort: {{ .containerPort | default .port }}
-          protocol: TCP
-        {{- end }}
-        {{- end }}
         volumeMounts:
         - name: log4j2
           mountPath: /opt/scaipproxy/config/log4j2.yml

@@ -54,41 +54,6 @@ spec:
   - name: {{ .Values.udpSignalingService.name }}
     port: {{ .Values.udpSignalingService.port }}
     protocol: UDP
-    #targetPort: {{ .Values.udpSignalingService.containerPort | default .Values.udpSignalingService.port }}
-  selector:
-    {{- include ".helm2.selectorLabels" . | nindent 4 }}
-{{- end }}
-
-{{- if eq .Values.tcpSignalingService.enabled true }}
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: {{ include ".helm2.fullname" . }}-{{ .Values.tcpSignalingService.name }}
-  labels:
-    {{- include ".helm2.labels" . | nindent 4 }}
-  namespace: {{ .Release.Namespace }}
-{{- with .Values.tcpSignalingService.annotations }}
-  annotations:
-    {{- toYaml . | nindent 4 }}
-{{- end }}
-spec:
-  {{- if .Values.tcpSignalingService.externalIPs }}
-  externalIPs: 
-  {{- range .Values.tcpSignalingService.externalIPs }}
-    - {{.}}
-  {{- end }}
-  {{- end }}
-  type: {{ .Values.tcpSignalingService.type }}
-  {{- if ne .Values.tcpSignalingService.type "ClusterIP" }}
-  externalTrafficPolicy: {{ .Values.tcpSignalingService.externalTrafficPolicy }}
-  {{- end}}
-  ports:
-  {{- range .Values.tcpSignalingService.ports }}
-  - name: {{ .name }}
-    port: {{ .port }}
-    #targetPort: {{ .containerPort | default .port }}
-  {{- end }}
   selector:
     {{- include ".helm2.selectorLabels" . | nindent 4 }}
 {{- end }}

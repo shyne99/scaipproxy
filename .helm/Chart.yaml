@@ -2,7 +2,7 @@ apiVersion: v2
 name: scaipproxy
 description: SCAIPProxy Server
 type: application
-version: 0.0.13
+version: 0.0.14
 appVersion: latest
 sources:
   - https://github.com/fonoster/scaipproxy

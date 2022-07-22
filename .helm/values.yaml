@@ -30,20 +30,6 @@ udpSignalingService:
   annotations: {}
   externalIPs: []
 
-# Use this service to enable TCP access to the server's signaling
-# capabilities. Keep in mind that this will create the service for you
-# But the TCP protocol must also be enabled(default) in the server.
-tcpSignalingService:
-  enabled: true
-  externalTrafficPolicy: Local
-  name: siptcp
-  type: ClusterIP
-  ports:
-  - name: siptcp
-    port: 5060
-  annotations: {}
-  externalIPs: []
-
 # Certificates Management
 certs:
   provided: false
@@ -66,7 +52,7 @@ scaipproxy:
   registrarIntf: External
   javaOpts: ""
   livenessProbe:
-    initialDelaySeconds: 15
+    initialDelaySeconds: 60
     periodSeconds: 5
     successThreshold: 1
     failureThreshold: 3  
