@@ -25,8 +25,6 @@ services:
     image: fonoster/seet:latest
     depends_on: 
       provisioner:
-        condition: 'service_started'
-      scaipproxy:
         condition: 'service_healthy'
     volumes:
       - ./etc/seet.json:/seet.json
@@ -37,12 +35,18 @@ services:
     depends_on: 
       scaipproxy:
         condition: 'service_healthy'
+    healthcheck:
+     test: ["CMD-SHELL", "test -f /tmp/healthcheck.txt"]
+     interval: 10s
+     timeout: 60s
+     retries: 3
     entrypoint: >
       /bin/sh -c "
         set -e;
         rctl login https://scaipproxy:4567/api/v1beta1 -u admin -p changeit;
         rctl create -f /config/domains.yml
         rctl create -f /config/agents.yml
+        touch /tmp/healthcheck.txt
         # Avoid exiting
         sleep 600
       "
