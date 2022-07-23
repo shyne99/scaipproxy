@@ -130,7 +130,7 @@ class Server {
   }
 
   start () {
-    LOG.info('Starting Routr')
+    LOG.info('Starting SCAIPProxy')
     this.setup()
   }
 
