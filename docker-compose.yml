@@ -1,4 +1,4 @@
-version: '3.7'
+version: "3"
 services:
 
   scaipproxy:
@@ -22,18 +22,21 @@ services:
 
   seet: 
     image: fonoster/seet:latest
-    depends_on: [scaipproxy, provisioner]
+    depends_on: 
+      provisioner:
+        condition: 'service_completed_successfully'
     volumes:
       - ./etc/seet.json:/seet.json
       - ./etc/scenarios:/scenarios
 
   provisioner:
     image: fonoster/routr-ctl
-    depends_on: [scaipproxy]
+    depends_on: 
+      scaipproxy:
+        condition: 'service_healthy'
     entrypoint: >
       /bin/sh -c "
         set -e;
-        while ! nc -z scaipproxy 4567;do sleep 0.1; done
         rctl login https://scaipproxy:4567/api/v1beta1 -u admin -p changeit;
         rctl create -f /config/domains.yml
         rctl create -f /config/agents.yml

@@ -2,7 +2,7 @@
   {
     "name": "test climax devices (with authentication)",
     "description": "Integration test agains Climax devices using SIP authentication.",
-    "target": "routr",
+    "target": "scaipproxy",
     "port": 5060,
     "transportMode": "u1",
     "domain": "sip.local",
