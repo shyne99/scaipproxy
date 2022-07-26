@@ -31,7 +31,7 @@ services:
       - ./etc/scenarios:/scenarios
 
   provisioner:
-    image: fonoster/routr-ctl
+    image: fonoster/routr-ctl:latest
     depends_on: 
       scaipproxy:
         condition: 'service_healthy'
