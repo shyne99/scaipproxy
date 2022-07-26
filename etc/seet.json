@@ -24,7 +24,7 @@
       },
       {
         "mode": "uac",
-        "scenarioFile": "scenarios/climax.xml",
+        "scenarioFile": "scenarios/climax_with_auth.xml",
         "authentication": {
           "username": "111111",
           "secret": "changeit"
@@ -34,6 +34,46 @@
           { "name": "from", "value":  "111111@sip.local"},
           { "name": "to", "value": "arc@sip.local"},
           { "name": "body", "value": "<mrq><ref>00020486</ref><cha>0</cha><mty>ME</mty><cid>2342566343454</cid><dty>02</dty><did>00</did><crd>no-voice:</crd><stc>102</stc></mrq>"}
+        ]
+      }
+    ],
+    "enabled": false
+  },
+  {
+    "name": "test climax devices (without)",
+    "description": "Integration test agains Climax (no SIP authentication.)",
+    "target": "scaipproxy",
+    "port": 5060,
+    "transportMode": "u1",
+    "domain": "sip.local",
+    "userAgents": [
+      {
+        "mode": "uas",
+        "scenarioFile": "scenarios/arc.xml",
+        "authentication": {
+          "username": "arc",
+          "secret": "changeit"
+        },
+        "variables": [
+          { "name": "requestURI", "value": "111111@sip.local"},
+          { "name": "from", "value":  "arc@sip.local"},
+          { "name": "to", "value": "111111@sip.local"}
+        ],
+        "sendRegister": true,
+        "expires": 30
+      },
+      {
+        "mode": "uac",
+        "scenarioFile": "scenarios/climax_without_auth.xml",
+        "authentication": {
+          "username": "111111",
+          "secret": "changeit"
+        },
+        "variables": [
+          { "name": "requestURI", "value": "arc@sip.local"},
+          { "name": "from", "value":  "111111@sip.local"},
+          { "name": "to", "value": "arc@sip.local"},
+          { "name": "body", "value": "<mrq><ref>00020486</ref><cha>0</cha><mty>ME</mty><cid>111111</cid><dty>02</dty><did>00</did><crd>no-voice:</crd><stc>102</stc></mrq>"}
         ]
       }
     ],

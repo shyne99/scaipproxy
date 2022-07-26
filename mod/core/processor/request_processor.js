@@ -28,7 +28,7 @@ const isClimaxDeviceV2 = r =>
   r
     .getHeader(ViaHeader.NAME)
     .getBranch()
-    .includes('z9hG4bK-000')
+    .includes('z9hG4bK-100')
 const getXMLValue = (tagName, xmlStr) => {
   var tagValue = xmlStr.substring(
     xmlStr.lastIndexOf(tagName) + tagName.length,
@@ -70,7 +70,7 @@ class RequestProcessor {
 
     switch (request.getMethod()) {
       case Request.MESSAGE:
-        /*if (isClimaxDevice(request)) {
+        if (isClimaxDevice(request)) {
           // Get user from payload
           const user = getXMLValue(
             '<cid>',
@@ -87,9 +87,7 @@ class RequestProcessor {
           // Request sythetic registration since device doesn't
           // know how to REGISTER
           this.synthRegistrar.register(request)
-        } else*/
-
-        if (isEssenceMessage(request) || isClimaxDeviceV2(request)) {
+        } else if (isEssenceMessage(request) || isClimaxDeviceV2(request)) {
           // Check if message is authenticated
           if (config.spec.ex_scaipAuthEnabled) {
             LOG.debug(

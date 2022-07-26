@@ -1,6 +1,6 @@
 {
   "name": "scaipproxy",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Scaip Proxy Server",
   "scripts": {
     "clean": "rimraf node_modules build libs .gradle .routr.salt *.dat",
