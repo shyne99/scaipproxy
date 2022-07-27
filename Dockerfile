@@ -20,7 +20,8 @@ RUN apt-get update && apt-get install -y npm zip wget \
 ##
 ## Runner
 ##
-FROM debian:bullseye-20220711-slim as runner
+# FROM debian:bullseye-20220711-slim as runner
+FROM adoptopenjdk/openjdk11:jdk-11.0.11_9-debian-slim as runner
 LABEL maintainer="Pedro Sanders <psanders@fonoster.com>"
 
 ENV LANG C.UTF-8
@@ -29,7 +30,6 @@ RUN mkdir -p /opt/scaipproxy
 WORKDIR /opt/scaipproxy
 
 COPY --from=builder /build/scaipproxy-*_linux-x64_bin.tar.gz ./
-COPY --from=builder /build/etc/customjre ./jre
 
 RUN apt-get update && apt-get install curl iproute2 -y \
   && tar xvf scaipproxy-*_linux-x64_bin.tar.gz \
@@ -45,5 +45,5 @@ EXPOSE 5060/udp
 
 CMD ["./scaipproxy"]
 
-HEALTHCHECK --interval=5s --timeout=5s --retries=3 \
-  CMD ["curl", "-k", "--fail", "--silent", "--show-error", "--connect-timeout", "2", "-L", "https://localhost:4567/api/v1beta1/system/status"]
+HEALTHCHECK --interval=30s --timeout=30s --retries=3 \
+  CMD ["curl", "-k", "--fail", "--silent", "--show-error", "--connect-timeout", "5", "-L", "https://localhost:4567/api/v1beta1/system/status"]

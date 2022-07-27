@@ -1,7 +1,7 @@
 {
   "name": "scaipproxy",
-  "version": "1.0.2",
-  "description": "Scaip Proxy Server",
+  "version": "1.0.4",
+  "description": "SCAIPProxy Server",
   "scripts": {
     "clean": "rimraf node_modules build libs .gradle .routr.salt *.dat",
     "distro": "./.scripts/distro.sh",
