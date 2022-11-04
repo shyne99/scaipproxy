@@ -20,7 +20,6 @@ RUN apt-get update && apt-get install -y npm zip wget \
 ##
 ## Runner
 ##
-# FROM debian:bullseye-20220711-slim as runner
 FROM adoptopenjdk/openjdk11:jdk-11.0.11_9-debian-slim as runner
 LABEL maintainer="Pedro Sanders <psanders@fonoster.com>"
 
